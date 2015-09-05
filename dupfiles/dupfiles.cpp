@@ -17,6 +17,7 @@ static HashDigest hash_file(const boost::filesystem::directory_entry & entry)
     SHA512 sha512;
     sha512.init();
     sha512.update(static_cast<const unsigned char *>(map.map()), map.size());
+    map.close();
     return HashDigest(sha512);
 }
 

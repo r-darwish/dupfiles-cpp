@@ -6,16 +6,17 @@
 
 namespace dupfiles {
 
-class OpenError: public std::exception
+class SyscallError: public std::exception
 {
 public:
-    OpenError(const std::string & path, int err) :
+    SyscallError(const char * syscall, const std::string & path, int err) :
         std::exception(),
+        syscall_(syscall),
         path_(path),
         err_(err)
     {
         std::ostringstream stream;
-        stream << "Cannot open " << path_ << ": " << err_;
+        stream << syscall_ << " failed " << path_ << ": " << err_;
         what_.assign(stream.str());
     }
 
@@ -25,6 +26,7 @@ public:
     }
 
 private:
+    const char * syscall_;
     std::string what_;
     std::string path_;
     int err_;
@@ -34,21 +36,37 @@ MemoryMap::MemoryMap(const boost::filesystem::directory_entry & entry):
     size_(boost::filesystem::file_size(entry)) {
     auto fd = open(entry.path().string().c_str(), O_RDONLY);
     if (fd == -1) {
-        throw OpenError(entry.path().string(), errno);
+        throw SyscallError("open", entry.path().string(), errno);
     }
 
     auto map_ = mmap(nullptr, size_, PROT_READ, MAP_SHARED, fd, 0);
-    close(fd);
+    ::close(fd);
     if (map_ == MAP_FAILED) {
-        throw OpenError(entry.path().string(), errno);
+        throw SyscallError("mmap", entry.path().string(), errno);
     }
 
     this->map_ = map_;
 }
 
+void MemoryMap::close() {
+    if (map_ == nullptr) {
+        return;
+    }
+
+    if (munmap(map_, size_) != 0) {
+        throw SyscallError("munmap", "", errno);
+    }
+
+    map_ = nullptr;
+}
+
 MemoryMap::~MemoryMap()
 {
-    munmap(map_, size_);
+    try {
+        close();
+    } catch (SyscallError) {
+
+    }
 }
 
 }
