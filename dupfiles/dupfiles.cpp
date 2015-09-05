@@ -5,17 +5,19 @@
 #include <dupfiles.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/crc.hpp>
+#include "sha512/sha512.hpp"
+#include "hash_digest.hpp"
 #include "mmap.hpp"
 
 namespace dupfiles {
 
-static unsigned long hash_file(const boost::filesystem::directory_entry & entry)
+static HashDigest hash_file(const boost::filesystem::directory_entry & entry)
 {
-    boost::crc_32_type result;
     MemoryMap map(entry);
-    result.process_bytes(map.map(), map.size());
-    return static_cast<unsigned long>(result.checksum());
+    SHA512 sha512;
+    sha512.init();
+    sha512.update(static_cast<const unsigned char *>(map.map()), map.size());
+    return HashDigest(sha512);
 }
 
 std::vector<std::vector<std::string>> findDuplicates(const std::string & path)
@@ -28,7 +30,7 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path)
     std::unordered_map<
         boost::uintmax_t,
         std::unordered_map<
-            unsigned long,
+            HashDigest,
             std::vector<boost::filesystem::directory_entry>>> map;
 
     boost::filesystem::recursive_directory_iterator iter(path);
@@ -39,7 +41,7 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path)
         }
 
         auto size = boost::filesystem::file_size(entry);
-        auto entry_hash = size == 0 ? 0 : hash_file(entry);
+        auto entry_hash = size == 0 ? HashDigest() : hash_file(entry);
         map[size][entry_hash].push_back(std::move(entry));
     }
 
