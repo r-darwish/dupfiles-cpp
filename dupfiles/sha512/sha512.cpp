@@ -44,14 +44,14 @@ const unsigned long long SHA512::sha512_k[80] = //ULL = uint64
              0x4cc5d4becb3e42b6ULL, 0x597f299cfc657e2aULL,
              0x5fcb6fab3ad6faecULL, 0x6c44198c4a475817ULL};
 
-void SHA512::transform(const unsigned char *message, unsigned int block_nb)
+void SHA512::transform(const unsigned char *message, size_t block_nb)
 {
     uint64 w[80];
     uint64 wv[8];
     uint64 t1, t2;
     const unsigned char *sub_block;
-    int i, j;
-    for (i = 0; i < (int) block_nb; i++) {
+    size_t i, j;
+    for (i = 0; i < block_nb; i++) {
         sub_block = message + (i << 7);
         for (j = 0; j < 16; j++) {
             SHA2_PACK64(&sub_block[j << 3], &w[j]);
@@ -96,10 +96,10 @@ void SHA512::init()
     m_tot_len = 0;
 }
 
-void SHA512::update(const unsigned char *message, unsigned int len)
+void SHA512::update(const unsigned char *message, size_t len)
 {
-    unsigned int block_nb;
-    unsigned int new_len, rem_len, tmp_len;
+    size_t block_nb;
+    size_t new_len, rem_len, tmp_len;
     const unsigned char *shifted_message;
     tmp_len = SHA384_512_BLOCK_SIZE - m_len;
     rem_len = len < tmp_len ? len : tmp_len;
@@ -121,9 +121,9 @@ void SHA512::update(const unsigned char *message, unsigned int len)
 
 void SHA512::final(unsigned char *digest)
 {
-    unsigned int block_nb;
-    unsigned int pm_len;
-    unsigned int len_b;
+    size_t block_nb;
+    size_t pm_len;
+    size_t len_b;
     int i;
     block_nb = 1 + ((SHA384_512_BLOCK_SIZE - 17)
                      < (m_len % SHA384_512_BLOCK_SIZE));

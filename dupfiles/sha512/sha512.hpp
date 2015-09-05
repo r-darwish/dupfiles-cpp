@@ -2,7 +2,6 @@
 #define SHA512_H
 #include <string>
 
-
 class SHA512
 {
 protected:
@@ -15,14 +14,14 @@ protected:
 
 public:
     void init();
-    void update(const unsigned char *message, unsigned int len);
+    void update(const unsigned char *message, size_t len);
     void final(unsigned char *digest);
     static const unsigned int DIGEST_SIZE = ( 512 / 8);
 
 protected:
-    void transform(const unsigned char *message, unsigned int block_nb);
-    unsigned int m_tot_len;
-    unsigned int m_len;
+    void transform(const unsigned char *message, size_t block_nb);
+    size_t m_tot_len;
+    size_t m_len;
     unsigned char m_block[2 * SHA384_512_BLOCK_SIZE];
     uint64 m_h[8];
 };

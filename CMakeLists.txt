@@ -6,6 +6,7 @@ set(COMPILE_OPTIONS
   -Wall
   -Wextra
   -Werror
+  -Wconversion
   -std=c++11
   -stdlib=libc++
 )
