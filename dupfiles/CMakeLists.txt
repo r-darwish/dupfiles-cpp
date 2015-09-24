@@ -1,4 +1,5 @@
 find_package(Boost REQUIRED system filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
-add_library(dupfiles STATIC dupfiles.cpp mmap.cpp sha512/sha512.cpp)
-target_link_libraries(dupfiles ${Boost_LIBRARIES})
+include_directories(BEFORE SYSTEM ${CMAKE_SOURCE_DIR}/deps/openssl/include)
+add_library(dupfiles STATIC dupfiles.cpp mmap.cpp)
+target_link_libraries(dupfiles ${Boost_LIBRARIES} ${CMAKE_SOURCE_DIR}/deps/openssl/libcrypto.a)

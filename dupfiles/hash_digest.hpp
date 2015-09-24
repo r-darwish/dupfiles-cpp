@@ -1,7 +1,7 @@
 #pragma once
 
+#include <openssl/sha.h>
 #include <string.h>
-#include "sha512/sha512.hpp"
 
 namespace dupfiles {
 
@@ -12,11 +12,14 @@ public:
         memset(block_m, 0, sizeof(block_m));
     };
 
-    HashDigest(SHA512 & sha512) {
-        sha512.final(block_m);
+    HashDigest(const void * buffer, size_t length) {
+        SHA512_CTX sha;
+        SHA512_Init(&sha);
+        SHA512_Update(&sha, buffer, length);
+        SHA512_Final(block_m, &sha);
     }
 
-    static const unsigned int DIGEST_SIZE = SHA512::DIGEST_SIZE;
+    static const unsigned int DIGEST_SIZE = SHA512_DIGEST_LENGTH;
 
     const unsigned char * block() const { return block_m; }
 

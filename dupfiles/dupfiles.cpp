@@ -5,7 +5,6 @@
 #include <dupfiles.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/cstdint.hpp>
-#include "sha512/sha512.hpp"
 #include "hash_digest.hpp"
 #include "mmap.hpp"
 
@@ -14,11 +13,9 @@ namespace dupfiles {
 static HashDigest hash_file(const boost::filesystem::directory_entry & entry)
 {
     MemoryMap map(entry);
-    SHA512 sha512;
-    sha512.init();
-    sha512.update(static_cast<const unsigned char *>(map.map()), map.size());
+    auto hash = HashDigest(static_cast<const unsigned char *>(map.map()), map.size());
     map.close();
-    return HashDigest(sha512);
+    return hash;
 }
 
 std::vector<std::vector<std::string>> findDuplicates(const std::string & path)
