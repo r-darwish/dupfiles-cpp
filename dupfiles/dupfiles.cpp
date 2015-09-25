@@ -18,7 +18,7 @@ static HashDigest hash_file(const boost::filesystem::directory_entry & entry)
     return hash;
 }
 
-std::vector<std::vector<std::string>> findDuplicates(const std::string & path)
+std::vector<std::vector<std::string>> findDuplicates(const std::string & path, const ErrorCallback & error_callback)
 {
     if (not boost::filesystem::is_directory(path)) {
         throw NotADirectory();
@@ -39,8 +39,14 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path)
         }
 
         auto size = boost::filesystem::file_size(entry);
-        auto entry_hash = size == 0 ? HashDigest() : hash_file(entry);
-        map[size][entry_hash].push_back(std::move(entry));
+
+	try {
+            auto entry_hash = size == 0 ? HashDigest() : hash_file(entry);
+            map[size][entry_hash].push_back(std::move(entry));
+        } catch (const std::exception & e) {
+            error_callback(e.what());
+            continue;
+        }
     }
 
     for (const auto iter1 : map) {

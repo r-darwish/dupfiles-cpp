@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 #include <vector>
 
 namespace dupfiles
@@ -14,7 +15,9 @@ class NotADirectory: public std::exception
     }
 };
 
+using ErrorCallback = std::function<void(const char *)>;
 
-std::vector<std::vector<std::string>> findDuplicates(const std::string & path);
+
+std::vector<std::vector<std::string>> findDuplicates(const std::string & path, const ErrorCallback & error_callback);
 
 }
