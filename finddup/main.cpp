@@ -1,17 +1,33 @@
 #include <iostream>
+#include <fstream>
 #include <dupfiles.hpp>
-
-void error(const char * what) {
-    std::cerr << what << std::endl;
-}
 
 int main()
 {
-    std::cout << "" << std::endl;
-    for (auto duplicate_group : dupfiles::findDuplicates(".", error)) {
-        std::cout << duplicate_group.size() << " Duplicate files: " << std::endl;
+    auto errors = std::vector<std::string>();
+    auto duplicates = dupfiles::findDuplicates(
+            ".",
+            [&] (const char * what) { errors.emplace_back(what); });
+
+    std::ofstream report;
+    report.open("Duplicate Files.txt", std::ios::trunc);
+    if (not report.is_open()) {
+        std::cerr << "Failed to open the report file" << std::endl;
+        return 1;
+    }
+
+    if (not errors.empty()) {
+        report << "Errors: " << std::endl;
+        for (auto error : errors) {
+            report << error << std::endl;
+        }
+        report << std::endl;
+    }
+
+    for (auto duplicate_group : duplicates) {
+        report << duplicate_group.size() << " Duplicate files: " << std::endl;
         for (auto duplicate_entry : duplicate_group) {
-            std::cout << "    " << duplicate_entry << std::endl;
+            report << "    " << duplicate_entry << std::endl;
         }
     }
 }
