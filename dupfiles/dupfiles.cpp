@@ -5,15 +5,15 @@
 #include <dupfiles.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/cstdint.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
 #include "hash_digest.hpp"
-#include "mmap.hpp"
 
 namespace dupfiles {
 
 static HashDigest hash_file(const boost::filesystem::directory_entry & entry)
 {
-    MemoryMap map(entry);
-    auto hash = HashDigest(static_cast<const unsigned char *>(map.map()), map.size());
+    boost::iostreams::mapped_file_source map(entry.path());
+    auto hash = HashDigest(static_cast<const void *>(map.data()), map.size());
     map.close();
     return hash;
 }
