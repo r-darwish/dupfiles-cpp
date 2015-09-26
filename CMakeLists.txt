@@ -20,6 +20,12 @@ if(("${CMAKE_SYSTEM}" MATCHES "Linux") OR (MINGW))
 endif()
 
 set(Boost_USE_STATIC_LIBS ON)
+if(WIN32)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a)
+else()
+    set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+endif()
+
 add_subdirectory(dupfiles)
 add_subdirectory(finddup)
 
