@@ -1,5 +1,8 @@
 #include <iostream>
 #include <fstream>
+#ifdef _MSC_VER
+#include <iso646.h>
+#endif
 #include <dupfiles.hpp>
 
 int main()

@@ -3,6 +3,9 @@
 #include <fstream>
 #include <unordered_map>
 #include <dupfiles.hpp>
+#ifdef _MSC_VER
+#include <iso646.h>
+#endif
 #include <boost/filesystem.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
