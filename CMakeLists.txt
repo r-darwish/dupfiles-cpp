@@ -10,6 +10,7 @@ else()
       -Werror
       -Wconversion
       -std=c++11
+      -O3
     )
 endif()
 
