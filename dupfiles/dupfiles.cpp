@@ -16,7 +16,7 @@ namespace dupfiles {
 static HashDigest hash_file(const boost::filesystem::directory_entry & entry)
 {
     boost::iostreams::mapped_file_source map(entry.path());
-    auto hash = HashDigest(static_cast<const void *>(map.data()), map.size());
+    auto hash = sha512(static_cast<const void *>(map.data()), map.size());
     map.close();
     return hash;
 }
