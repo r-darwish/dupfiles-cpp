@@ -33,7 +33,7 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
 
     	try {
             auto entry_hash = hash_file(entry);
-            map[entry_hash].push_back(std::move(entry));
+            map[entry_hash].emplace_back(std::move(entry));
         } catch (const std::exception & e) {
             auto message = entry.path().string() + ": " + e.what();
             error_callback(std::move(message));
@@ -49,9 +49,9 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
         std::vector<std::string> paths;
         paths.reserve(map_iter.second.size());
         for (auto entry : map_iter.second) {
-            paths.push_back(entry.path().string());
+            paths.emplace_back(entry.path().string());
         }
-        result.push_back(paths);
+        result.emplace_back(std::move(paths));
     }
 
     return result;
