@@ -9,17 +9,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
-#include "hash_digest.hpp"
+#include "file_hash.hpp"
 
 namespace dupfiles {
-
-static HashDigest hash_file(const boost::filesystem::directory_entry & entry)
-{
-    boost::iostreams::mapped_file_source map(entry.path());
-    auto hash = sha512(static_cast<const void *>(map.data()), map.size());
-    map.close();
-    return hash;
-}
 
 std::vector<std::vector<std::string>> findDuplicates(const std::string & path, const ErrorCallback & error_callback)
 {
@@ -29,10 +21,8 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
 
     std::vector<std::vector<std::string>> result;
     std::unordered_map<
-        boost::uintmax_t,
-        std::unordered_map<
-            HashDigest,
-            std::vector<boost::filesystem::directory_entry>>> map;
+        FileHash,
+        std::vector<boost::filesystem::directory_entry>> map;
 
     boost::filesystem::recursive_directory_iterator iter(path);
     std::vector<std::string> group;
@@ -41,27 +31,27 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
             continue;
         }
 
-        auto size = boost::filesystem::file_size(entry);
-
-	try {
-            auto entry_hash = size == 0 ? HashDigest() : hash_file(entry);
-            map[size][entry_hash].push_back(std::move(entry));
+    	try {
+            auto entry_hash = hash_file(entry);
+            map[entry_hash].push_back(std::move(entry));
         } catch (const std::exception & e) {
-            error_callback(e.what());
+            auto message = entry.path().string() + ": " + e.what();
+            error_callback(message);
             continue;
         }
     }
 
-    for (const auto iter1 : map) {
-        for (const auto iter2 : iter1.second) {
-            std::vector<std::string> paths;
-            if (iter2.second.size() > 1) {
-                for (const auto path_iter : iter2.second) {
-                    paths.push_back(std::move(path_iter.path().string()));
-                }
-                result.push_back(std::move(paths));
-            }
+    for (const auto map_iter : map) {
+        if (map_iter.second.size() <= 1) {
+            continue;
         }
+
+        std::vector<std::string> paths;
+        paths.reserve(map_iter.second.size());
+        for (auto entry : map_iter.second) {
+            paths.push_back(entry.path().string());
+        }
+        result.push_back(paths);
     }
 
     return result;

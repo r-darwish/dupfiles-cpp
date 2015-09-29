@@ -15,7 +15,7 @@ class NotADirectory: public std::exception
     }
 };
 
-using ErrorCallback = std::function<void(const char *)>;
+using ErrorCallback = std::function<void(std::string)>;
 
 
 std::vector<std::vector<std::string>> findDuplicates(const std::string & path, const ErrorCallback & error_callback);
