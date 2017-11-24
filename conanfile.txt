@@ -1,0 +1,7 @@
+[requires]
+Boost.Filesystem/1.65.1@bincrafters/stable
+Boost.Iostreams/1.65.1@bincrafters/stable
+OpenSSL/1.0.2@conan/stable
+
+[generators]
+cmake
