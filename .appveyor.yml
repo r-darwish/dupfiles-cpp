@@ -1,0 +1,21 @@
+artifacts:
+  - path: bin\finddup.exe
+    name: finddup
+
+environment:
+    PYTHON: "C:\\Python27"
+    PYTHON_VERSION: "2.7.8"
+    PYTHON_ARCH: "32"
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    CONAN_VISUAL_VERSIONS: 15
+
+install:
+  - set PATH=%PATH%;%PYTHON%/Scripts/
+  - pip.exe install conan --upgrade
+  - conan user # It creates the conan data directory
+  - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+
+build_script:
+  - conan install -s compiler.runtime=MT
+  - cmake  -G "Visual Studio 15 2017 Win64" .
+  - cmake --build . --config Release
