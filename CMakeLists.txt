@@ -23,11 +23,11 @@ if(("${CMAKE_SYSTEM}" MATCHES "Linux") OR (MINGW))
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
 endif()
 
- include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_subdirectory(dupfiles)
-add_subdirectory(finddup)
+add_subdirectory(src/lib)
+add_subdirectory(src/cli)
 
 if("${CMAKE_SYSTEM}" MATCHES "Linux")
     set_target_properties(finddup PROPERTIES LINK_SEARCH_END_STATIC 1)
