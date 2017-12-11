@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Dupfiles)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if(MSVC)
     set(COMPILE_OPTIONS /MT)
 else()
@@ -12,7 +15,6 @@ else()
       -Wextra
       -Werror
       -Wconversion
-      -std=c++11
       -O3
     )
 endif()
