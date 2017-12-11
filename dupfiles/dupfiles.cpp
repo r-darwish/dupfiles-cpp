@@ -9,7 +9,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
-#include "file_hash.hpp"
+#include "file_identity.hpp"
 
 namespace dupfiles {
 
@@ -21,7 +21,7 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
 
     std::vector<std::vector<std::string>> result;
     std::unordered_map<
-        FileHash,
+        FileIdentity,
         std::vector<boost::filesystem::directory_entry>> map;
 
     boost::filesystem::recursive_directory_iterator iter(path);
@@ -32,7 +32,7 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
         }
 
     	try {
-            auto entry_hash = hash_file(entry);
+            auto entry_hash = get_file_identity(entry);
             map[entry_hash].emplace_back(std::move(entry));
         } catch (const std::exception & e) {
             auto message = entry.path().string() + ": " + e.what();
