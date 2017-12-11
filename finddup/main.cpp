@@ -1,5 +1,5 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #ifdef _MSC_VER
 #include <iso646.h>
 #endif
@@ -8,9 +8,7 @@
 int main()
 {
     auto errors = std::vector<std::string>();
-    auto duplicates = dupfiles::findDuplicates(
-            ".",
-            [&] (std::string what) { errors.emplace_back(what); });
+    auto duplicates = dupfiles::findDuplicates(".", [&](std::string what) { errors.emplace_back(what); });
 
     std::ofstream report;
     report.open("Duplicate Files.txt", std::ios::trunc);

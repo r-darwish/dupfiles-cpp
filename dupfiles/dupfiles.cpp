@@ -1,28 +1,27 @@
-#include <string>
-#include <vector>
-#include <fstream>
-#include <unordered_map>
 #include <dupfiles.hpp>
+#include <fstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #ifdef _MSC_VER
 #include <iso646.h>
 #endif
-#include <boost/filesystem.hpp>
-#include <boost/cstdint.hpp>
-#include <boost/iostreams/device/mapped_file.hpp>
 #include "file_identity.hpp"
+#include <boost/cstdint.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
 
 namespace dupfiles {
 
-std::vector<std::vector<std::string>> findDuplicates(const std::string & path, const ErrorCallback & error_callback)
+std::vector<std::vector<std::string>> findDuplicates(const std::string & path,
+                                                     const ErrorCallback & error_callback)
 {
     if (not boost::filesystem::is_directory(path)) {
         throw NotADirectory();
     }
 
     std::vector<std::vector<std::string>> result;
-    std::unordered_map<
-        FileIdentity,
-        std::vector<boost::filesystem::directory_entry>> map;
+    std::unordered_map<FileIdentity, std::vector<boost::filesystem::directory_entry>> map;
 
     boost::filesystem::recursive_directory_iterator iter(path);
     std::vector<std::string> group;
@@ -31,7 +30,7 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
             continue;
         }
 
-    	try {
+        try {
             auto entry_hash = get_file_identity(entry);
             map[entry_hash].emplace_back(std::move(entry));
         } catch (const std::exception & e) {
@@ -42,13 +41,14 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
     }
 
     for (const auto map_iter : map) {
-        if (map_iter.second.size() <= 1) {
+        const auto & files = map_iter.second;
+        if (files.size() <= 1) {
             continue;
         }
 
         std::vector<std::string> paths;
-        paths.reserve(map_iter.second.size());
-        for (auto entry : map_iter.second) {
+        paths.reserve(files.size());
+        for (auto entry : files) {
             paths.emplace_back(entry.path().string());
         }
         result.emplace_back(std::move(paths));
@@ -57,4 +57,4 @@ std::vector<std::vector<std::string>> findDuplicates(const std::string & path, c
     return result;
 }
 
-}
+} // namespace dupfiles

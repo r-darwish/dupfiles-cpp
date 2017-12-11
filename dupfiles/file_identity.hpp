@@ -1,11 +1,11 @@
 #pragma once
 
+#include <boost/filesystem.hpp>
+#include <boost/functional/hash.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <array>
 #include <openssl/sha.h>
 #include <string.h>
-#include <array>
-#include <boost/functional/hash.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/iostreams/device/mapped_file.hpp>
 
 namespace dupfiles {
 
@@ -25,12 +25,13 @@ inline FileIdentity get_file_identity(const boost::filesystem::directory_entry &
     return FileIdentity(map.size(), digest);
 }
 
-}
+} // namespace dupfiles
 
 namespace std {
 
-template <> struct hash<dupfiles::FileIdentity> {
-    size_t operator()(const dupfiles::FileIdentity &x) const
+template<>
+struct hash<dupfiles::FileIdentity> {
+    size_t operator()(const dupfiles::FileIdentity & x) const
     {
         std::size_t seed = x.first;
         boost::hash_combine(seed, boost::hash<decltype(x.second)>()(x.second));
@@ -38,4 +39,4 @@ template <> struct hash<dupfiles::FileIdentity> {
     }
 };
 
-}
+} // namespace std
