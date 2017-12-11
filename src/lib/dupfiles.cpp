@@ -13,8 +13,8 @@
 
 namespace dupfiles {
 
-std::vector<std::vector<std::string>> findDuplicates(const std::string & path,
-                                                     const ErrorCallback & error_callback)
+std::vector<std::vector<std::string>> find_duplicates(const std::string & path,
+                                                      const ErrorCallback & error_callback)
 {
     if (not boost::filesystem::is_directory(path)) {
         throw NotADirectory();

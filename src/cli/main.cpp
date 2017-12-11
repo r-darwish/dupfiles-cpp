@@ -8,7 +8,7 @@
 int main()
 {
     auto errors = std::vector<std::string>();
-    auto duplicates = dupfiles::findDuplicates(".", [&](std::string what) { errors.emplace_back(what); });
+    auto duplicates = dupfiles::find_duplicates(".", [&](std::string what) { errors.emplace_back(what); });
 
     std::ofstream report;
     report.open("Duplicate Files.txt", std::ios::trunc);
