@@ -13,32 +13,11 @@
 
 namespace dupfiles {
 
-std::vector<std::vector<std::string>> find_duplicates(const std::string & path,
-                                                      const ErrorCallback & error_callback)
+using IdentityMap = std::unordered_map<FileIdentity, std::vector<boost::filesystem::directory_entry>>;
+
+inline std::vector<std::vector<std::string>> prepare_results(const IdentityMap & map)
 {
-    if (not boost::filesystem::is_directory(path)) {
-        throw NotADirectory();
-    }
-
     std::vector<std::vector<std::string>> result;
-    std::unordered_map<FileIdentity, std::vector<boost::filesystem::directory_entry>> map;
-
-    boost::filesystem::recursive_directory_iterator iter(path);
-    std::vector<std::string> group;
-    for (const auto entry : iter) {
-        if (boost::filesystem::is_directory(entry)) {
-            continue;
-        }
-
-        try {
-            auto entry_hash = get_file_identity(entry);
-            map[entry_hash].emplace_back(std::move(entry));
-        } catch (const std::exception & e) {
-            auto message = entry.path().string() + ": " + e.what();
-            error_callback(std::move(message));
-            continue;
-        }
-    }
 
     for (const auto map_iter : map) {
         const auto & files = map_iter.second;
@@ -55,6 +34,34 @@ std::vector<std::vector<std::string>> find_duplicates(const std::string & path,
     }
 
     return result;
+}
+
+std::vector<std::vector<std::string>> find_duplicates(const std::string & path,
+                                                      const ErrorCallback & error_callback)
+{
+    if (not boost::filesystem::is_directory(path)) {
+        throw NotADirectory();
+    }
+
+    IdentityMap map;
+
+    boost::filesystem::recursive_directory_iterator iter(path);
+    for (const auto entry : iter) {
+        if (boost::filesystem::is_directory(entry)) {
+            continue;
+        }
+
+        try {
+            auto entry_hash = get_file_identity(entry);
+            map[entry_hash].emplace_back(std::move(entry));
+        } catch (const std::exception & e) {
+            auto message = entry.path().string() + ": " + e.what();
+            error_callback(std::move(message));
+            continue;
+        }
+    }
+
+    return prepare_results(map);
 }
 
 } // namespace dupfiles
