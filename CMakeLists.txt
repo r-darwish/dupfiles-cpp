@@ -14,9 +14,7 @@ else()
       -Wall
       -Wextra
       -Werror
-      -Wconversion
-      -O3
-    )
+      -Wconversion)
 endif()
 
 add_compile_options(${COMPILE_OPTIONS})
