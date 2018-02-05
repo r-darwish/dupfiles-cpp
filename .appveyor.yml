@@ -16,6 +16,6 @@ install:
   - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 
 build_script:
-  - conan install -s compiler.runtime=MT
+  - conan install -s compiler.runtime=MT .
   - cmake  -G "Visual Studio 15 2017 Win64" .
   - cmake --build . --config Release
