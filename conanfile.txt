@@ -1,7 +1,12 @@
 [requires]
-Boost.Filesystem/1.65.1@bincrafters/stable
-Boost.Iostreams/1.65.1@bincrafters/stable
-OpenSSL/1.0.2@conan/stable
+boost_filesystem/1.66.0@bincrafters/stable
+boost_iostreams/1.66.0@bincrafters/stable
+OpenSSL/1.1.0g@conan/stable
+
+[options]
+boost_iostreams:use_zlib=False
+boost_iostreams:use_lzma=False
+boost_iostreams:use_bzip2=False
 
 [generators]
 cmake
