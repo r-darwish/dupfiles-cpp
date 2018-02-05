@@ -11,9 +11,9 @@ use the results of this tool with care. In any case, this tool does not alter yo
 suggests which of them are duplicate.
 
 The tool was built for Windows users which are not familiar with the command line. Thus, despite
-having no GUI. The resulting application is designed to be dropped in the directory which the user
-wishes to check and then invoked by double clicking on it. It will place a text file called
-`Duplicate Files.txt` that stores its result.
+having no GUI, it is designed to be dropped at the directory which the user wishes to check and then
+invoked by double clicking on it. It will place a text file called `Duplicate Files.txt` that stores
+its result.
 
 The tool uses memory map to hash the files, and so it might fail indexing large files when built for
 32-bit platforms.
