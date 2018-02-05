@@ -1,3 +1,5 @@
+[https://ci.appveyor.com/api/projects/status/github/r-darwish/dupfiles-cpp?svg=true](https://ci.appveyor.com/api/projects/status/github/r-darwish/dupfiles-cpp?svg=true)
+
 # Dupfiles
 The purpose of this application is to find duplicate files inside a given directory. It does this by
 storing file names in buckets of (size, SHA1). Files that have the same SHA1 result and size are
