@@ -1,4 +1,4 @@
-![https://ci.appveyor.com/api/projects/status/github/r-darwish/dupfiles-cpp?svg=true](https://ci.appveyor.com/api/projects/status/github/r-darwish/dupfiles-cpp?svg=true)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/r-darwish/dupfiles-cpp?svg=true)](https://ci.appveyor.com/project/r-darwish/dupfiles-cpp)
 
 # Dupfiles
 The purpose of this application is to find duplicate files inside a given directory. It does this by
