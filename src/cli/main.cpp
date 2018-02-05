@@ -19,15 +19,15 @@ int main()
 
     if (not errors.empty()) {
         report << "Errors: " << std::endl;
-        for (auto error : errors) {
+        for (const auto& error : errors) {
             report << error << std::endl;
         }
         report << std::endl;
     }
 
-    for (auto duplicate_group : duplicates) {
+    for (const auto& duplicate_group : duplicates) {
         report << duplicate_group.size() << " Duplicate files: " << std::endl;
-        for (auto duplicate_entry : duplicate_group) {
+        for (const auto& duplicate_entry : duplicate_group) {
             report << "    " << duplicate_entry << std::endl;
         }
     }

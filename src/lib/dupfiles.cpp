@@ -19,7 +19,7 @@ inline std::vector<std::vector<std::string>> prepare_results(const IdentityMap &
 {
     std::vector<std::vector<std::string>> result;
 
-    for (const auto map_iter : map) {
+    for (const auto& map_iter : map) {
         const auto & files = map_iter.second;
         if (files.size() <= 1) {
             continue;
@@ -46,7 +46,7 @@ std::vector<std::vector<std::string>> find_duplicates(const std::string & path,
     IdentityMap map;
 
     boost::filesystem::recursive_directory_iterator iter(path);
-    for (const auto entry : iter) {
+    for (const auto& entry : iter) {
         if (boost::filesystem::is_directory(entry)) {
             continue;
         }
